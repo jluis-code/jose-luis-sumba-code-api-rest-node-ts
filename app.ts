@@ -1,2 +1,6 @@
-const hello: string = 'Hello World';
-console.log({hello});
+import dotenv from 'dotenv';
+import Server from './models/server';
+dotenv.config();
+
+const server = new Server();
+server.listen();
