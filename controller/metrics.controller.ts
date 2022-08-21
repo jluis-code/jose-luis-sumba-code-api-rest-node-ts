@@ -15,6 +15,23 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
 
     try {
 
+        const { year = -1, coverage = 75, state = 'E' } = req.query;
+        console.log({ year, state, coverage });
+
+        const coverage_num: number = +coverage;
+        const year_num: number = +year;
+        console.log({ year_num, state, coverage_num });
+
+        let year_query = year_num;
+        const coverage_query = coverage_num / 100;
+
+        if (year_query == -1) {
+            year_query = new Date().getFullYear();
+            console.log(year_query);
+        }
+
+        console.log({ year_query, state, coverage_query });
+
         const tribe = await Tribe.findOne({
             where:
             {
@@ -28,28 +45,26 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
             return res.status(404).json(new NotFoundError(`The Tribe is not registered`));
         }
 
-        const currentYear = new Date().getFullYear();
-        console.log(currentYear);
-
 
         const repositories = await Repository.findAll({
             where: {
                 id_tribe: id_tribe,
-                state: 'E',
-                status: 'A',
-                andOp: db.where(db.fn('date_part', 'year', db.col('create_time')), currentYear)
+                state: state,
+                andOp: db.where(db.fn('date_part', 'year', db.col('create_time')), year_query)
             },
             include: {
                 model: Metrics,
                 where: {
                     coverage: {
-                        [Op.gt]: 0.75
+                        [Op.gt]: coverage_query
                     }
                 }
             }
         });
 
-        if (!repositories) {
+        console.log(repositories);
+
+        if (!repositories || (Array.isArray(repositories) && repositories.length == 0)) {
             return res.status(404).json(new NotFoundError('La Tribu no tiene repositorios que cumplan con la cobertura necesaria'));
         }
 
