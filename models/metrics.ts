@@ -36,13 +36,12 @@ const Metrics = db.define(
 );
 
 
-Metrics.belongsTo(Repository, { foreignKey: 'id_repository' });
-
 Organization.sync().then(() => {
     console.log('sync Organization ok');
 }).catch(() => {
     console.log('sync Organization failed');
 });
+
 
 
 Tribe.sync().then(() => {
@@ -52,17 +51,22 @@ Tribe.sync().then(() => {
 });
 
 
-Repository.sync().then(() => {
-    console.log('sync Repository ok');
-}).catch(() => {
-    console.log('sync Repository failed');
-});
-
 
 Metrics.sync().then(() => {
     console.log('sync Metrics ok');
 }).catch(() => {
     console.log('sync Metrics failed');
 });
+
+
+//Metrics.belongsTo(Repository, { foreignKey: 'id_repository' });
+Repository.hasOne(Metrics, { foreignKey: 'id_repository' });
+
+Repository.sync().then(() => {
+    console.log('sync Repository ok');
+}).catch(() => {
+    console.log('sync Repository failed');
+});
+
 
 export default Metrics;
