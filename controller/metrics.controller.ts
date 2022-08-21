@@ -1,13 +1,11 @@
 import { Request, Response } from "express";
-import Tribe from "../models/tribe";
-import Repository from '../models/repository';
-import Metrics from '../models/metrics';
 import { Error400, NotFoundError } from "../lib/error";
-import db from "../db/connection";
-import Organization from '../models/organization';
 import { mapRepositoryMetricResponse } from '../dtos/mapper';
 import { requestVerificationState } from "../services/verificationStateServer";
-const { Op } = require("sequelize");
+import { getFilters } from "../lib/helpers";
+import { getTribeById } from '../services/tribe.service';
+import { getRepositories } from '../services/repository.service';
+
 
 export const getMetricsByTribe = async (req: Request, res: Response) => {
 
@@ -15,54 +13,16 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
 
     try {
 
-        const { year = -1, coverage = 75, state = 'E' } = req.query;
-        console.log({ year, state, coverage });
 
-        const coverage_num: number = +coverage;
-        const year_num: number = +year;
-        console.log({ year_num, state, coverage_num });
+        let { year_query, coverage_query, state_query } = getFilters(req);
 
-        let year_query = year_num;
-        const coverage_query = coverage_num / 100;
+        const tribe = await getTribeById(id_tribe);
 
-        if (year_query == -1) {
-            year_query = new Date().getFullYear();
-            console.log(year_query);
-        }
-
-        console.log({ year_query, state, coverage_query });
-
-        const tribe = await Tribe.findOne({
-            where:
-            {
-                id_tribe
-            },
-            include: {
-                model: Organization
-            }
-        });
         if (!tribe) {
             return res.status(404).json(new NotFoundError(`The Tribe is not registered`));
         }
 
-
-        const repositories = await Repository.findAll({
-            where: {
-                id_tribe: id_tribe,
-                state: state,
-                andOp: db.where(db.fn('date_part', 'year', db.col('create_time')), year_query)
-            },
-            include: {
-                model: Metrics,
-                where: {
-                    coverage: {
-                        [Op.gt]: coverage_query
-                    }
-                }
-            }
-        });
-
-        console.log(repositories);
+        const repositories = await getRepositories(id_tribe, state_query, year_query, coverage_query);
 
         if (!repositories || (Array.isArray(repositories) && repositories.length == 0)) {
             return res.status(404).json(new NotFoundError('La Tribu no tiene repositorios que cumplan con la cobertura necesaria'));
@@ -70,7 +30,6 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
 
         //Get VerificationCodes
         const codes = await requestVerificationState();
-
         const data = mapRepositoryMetricResponse(repositories, tribe, codes);
 
         res.json({

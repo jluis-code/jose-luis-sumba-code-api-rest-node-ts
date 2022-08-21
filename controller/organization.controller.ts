@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getCreateOrganizationResponseDTO, getUpdateOrganizationResponseDTO, OrganizationData, OrganizationDataRequest } from '../dtos/organizationDTOs';
+import { getCreateOrganizationResponseDTO, getUpdateOrganizationResponseDTO, OrganizationData, OrganizationDataRequest, getDeleteOrganizationResponseDTO } from '../dtos/organizationDTOs';
 import Organization from '../models/organization';
 import { Error400, NotFoundError } from '../lib/error';
 import Tribe from '../models/tribe';
@@ -66,7 +66,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
     const { body } = req;
     const data: OrganizationDataRequest = {
         name: body.name,
-        status: body.status ?? null
+        status: body.status ?? 1
     };
 
     try {
@@ -97,7 +97,7 @@ export const deleteOrganization = async (req: Request, res: Response) => {
             status: 0
         };
         await organization.update(data);
-        return res.json(getUpdateOrganizationResponseDTO(organization.get()));
+        return res.json(getDeleteOrganizationResponseDTO(organization.get()));
     } catch (error) {
         console.log(error);
         return res.json(new Error400('Organization not updated'));
