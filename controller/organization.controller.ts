@@ -64,16 +64,19 @@ export const updateOrganization = async (req: Request, res: Response) => {
 
     const { id } = req.params;
     const { body } = req;
-    const data: OrganizationDataRequest = {
-        name: body.name,
-        status: body.status ?? 1
-    };
+
 
     try {
         const organization = await Organization.findByPk(id);
         if (!organization) {
             return res.json(new NotFoundError(`Organization with id ${id} not found`));
         }
+
+        const organizationAsJson = organization.get();
+        const data: OrganizationDataRequest = {
+            name: body.name ?? organizationAsJson.name,
+            status: body.status ?? organizationAsJson.status,
+        };
         await organization.update(data);
         return res.json(getUpdateOrganizationResponseDTO(organization.get()));
     } catch (error) {

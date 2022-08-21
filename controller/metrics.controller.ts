@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Error400, NotFoundError } from "../lib/error";
 import { mapRepositoryMetricResponse } from '../dtos/mapper';
-import { requestVerificationState } from "../services/verificationStateServer";
+import { requestVerificationState } from "../services/verification-state-repository.service";
 import { getFilters } from "../lib/helpers";
 import { getTribeById } from '../services/tribe.service';
 import { getRepositories } from '../services/repository.service';
@@ -30,6 +30,10 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
 
         //Get VerificationCodes
         const codes = await requestVerificationState();
+        if (!codes.success) {
+            return res.status(400).json(new Error400('Information not available'));
+        }
+
         const data = mapRepositoryMetricResponse(repositories, tribe, codes);
 
         res.json({

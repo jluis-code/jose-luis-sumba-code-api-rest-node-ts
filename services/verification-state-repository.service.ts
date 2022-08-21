@@ -1,10 +1,12 @@
 import axios from 'axios'
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const requestVerificationState = async () => {
 
     const options = {
         method: 'GET',
-        url: `http://localhost:8000/api/verification-codes`,
+        url: `http://localhost:${process.env.PORT}/api/verification-codes`,
     };
 
     try {

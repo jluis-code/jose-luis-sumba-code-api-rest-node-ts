@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
 import { mapRepositoryMetricResponse } from '../dtos/mapper';
-import { requestVerificationState } from "../services/verificationStateServer";
+import { requestVerificationState } from "../services/verification-state-repository.service";
 import { getFilters } from "../lib/helpers";
 import { getTribeById } from '../services/tribe.service';
 import { getRepositories } from '../services/repository.service';
+import { fieldsToCsv } from '../types/types.const';
 const CsvParser = require("json2csv").Parser;
 
 
@@ -29,13 +30,18 @@ export const getCsv = async (req: Request, res: Response) => {
             } else {
                 //Get VerificationCodes
                 const codes = await requestVerificationState();
-                const data = mapRepositoryMetricResponse(repositories, tribe, codes);
-                have_data = true;
-                returnCsv(
-                    res,
-                    ["id", "name", "tribe", "organization", "coverage", "bugs", "vulnerabilities", "verificationState", "state"],
-                    data
-                )
+
+                if (!codes.success) {
+                    no_data_msg = `Information not available`;
+                } else {
+                    const data = mapRepositoryMetricResponse(repositories, tribe, codes);
+                    have_data = true;
+                    returnCsv(
+                        res,
+                        fieldsToCsv,
+                        data
+                    )
+                }
             }
         }
     } catch (error) {
