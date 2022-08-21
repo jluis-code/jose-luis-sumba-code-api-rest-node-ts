@@ -1,13 +1,18 @@
 import { DataTypes } from "sequelize";
 import db from "../db/connection";
+import Organization from "./organization";
 
-const Organization = db.define(
-    "organization",
+const Tribe = db.define(
+    "tribe",
     {
-        id_organization: {
+        id_tribe: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
             primaryKey: true,
+        },
+        id_organization: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         name: {
             type: DataTypes.STRING(50),
@@ -22,6 +27,6 @@ const Organization = db.define(
     }
 );
 
+Tribe.belongsTo(Organization, { foreignKey: 'id_organization' });
 
-
-export default Organization;
+export default Tribe;

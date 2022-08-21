@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { getCreateOrganizationResponseDTO, getUpdateOrganizationResponseDTO, OrganizationData, OrganizationDataRequest } from '../dtos/organizationDTOs';
 import Organization from '../models/organization';
 import { Error400, NotFoundError } from '../lib/error';
+import Tribe from '../models/tribe';
 
 export const getOrganizationList = async (req: Request, res: Response) => {
 

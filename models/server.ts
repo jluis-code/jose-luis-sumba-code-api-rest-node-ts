@@ -1,6 +1,7 @@
 import express, { Application } from 'express';
 import mockupRouter from '../routes/mockup.routes';
 import organizationRouter from '../routes/organization.routes';
+import metricRouter from '../routes/metrics.routes';
 import cors from 'cors';
 import db from '../db/connection';
 
@@ -9,7 +10,8 @@ class Server {
     private port: string;
     private apiPaths = {
         mockup: '/api/verification-codes',
-        organization: '/api/organization'
+        organization: '/api/organization',
+        metric: '/api/metrics'
     };
 
     constructor() {
@@ -40,6 +42,7 @@ class Server {
     routes() {
         this.app.use(this.apiPaths.mockup, mockupRouter);
         this.app.use(this.apiPaths.organization, organizationRouter);
+        this.app.use(this.apiPaths.metric, metricRouter);
     }
 
     listen() {
