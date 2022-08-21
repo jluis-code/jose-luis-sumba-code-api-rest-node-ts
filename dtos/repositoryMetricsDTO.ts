@@ -2,6 +2,7 @@ export interface RepositoryMetricsDTO {
     id: string;
     name: string;
     tribe: string,
+    organization: string,
     coverage: string,
     codeSmells: number,
     bugs: number,

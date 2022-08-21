@@ -6,6 +6,7 @@ import { Error400, NotFoundError } from "../lib/error";
 import db from "../db/connection";
 import Organization from '../models/organization';
 import { mapRepositoryMetricResponse } from '../dtos/mapper';
+import { requestVerificationState } from "../services/verificationStateServer";
 const { Op } = require("sequelize");
 
 export const getMetricsByTribe = async (req: Request, res: Response) => {
@@ -52,7 +53,10 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
             return res.status(404).json(new NotFoundError('La Tribu no tiene repositorios que cumplan con la cobertura necesaria'));
         }
 
-        const data = mapRepositoryMetricResponse(repositories, tribe);
+        //Get VerificationCodes
+        const codes = await requestVerificationState();
+
+        const data = mapRepositoryMetricResponse(repositories, tribe, codes);
 
         res.json({
             repositories: data,
