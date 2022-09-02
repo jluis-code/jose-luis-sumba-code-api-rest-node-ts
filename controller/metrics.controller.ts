@@ -31,7 +31,7 @@ export const getMetricsByTribe = async (req: Request, res: Response) => {
         //Get VerificationCodes
         const codes = await requestVerificationState();
         if (!codes.success) {
-            return res.status(400).json(new Error400('Information not available'));
+            //return res.status(400).json(new Error400('Information not available'));
         }
 
         const data = mapRepositoryMetricResponse(repositories, tribe, codes);

@@ -31,17 +31,17 @@ export const getCsv = async (req: Request, res: Response) => {
                 //Get VerificationCodes
                 const codes = await requestVerificationState();
 
-                if (!codes.success) {
+                /* if (!codes.success) {
                     no_data_msg = `Information not available`;
-                } else {
-                    const data = mapRepositoryMetricResponse(repositories, tribe, codes);
-                    have_data = true;
-                    returnCsv(
-                        res,
-                        fieldsToCsv,
-                        data
-                    )
-                }
+                } else { */
+                const data = mapRepositoryMetricResponse(repositories, tribe, codes);
+                have_data = true;
+                returnCsv(
+                    res,
+                    fieldsToCsv,
+                    data
+                )
+                //}
             }
         }
     } catch (error) {

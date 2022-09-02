@@ -6,6 +6,7 @@ export const requestVerificationState = async () => {
 
     const options = {
         method: 'GET',
+        timeout: 1000,
         url: `http://localhost:${process.env.PORT}/api/verification-codes`,
     };
 
@@ -22,7 +23,7 @@ export const requestVerificationState = async () => {
         return {
             success: false,
             status: 0,
-            data: null
+            data: []
         }
     }
 }

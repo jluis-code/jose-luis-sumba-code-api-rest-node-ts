@@ -4,7 +4,7 @@ import { RepositoryMetricsDTO } from './repositoryMetricsDTO';
 import { getVerificationCodes } from '../controller/mockup.controller';
 import { State, VerificationState } from '../types/types.enums';
 
-export const mapRepositoryMetricResponse = (repo: InstanceType<typeof Repository>[],
+export const mapRepositoryMetricResponse = (repo: InstanceType<typeof Repository>[] | [],
     tribe: InstanceType<typeof Tribe>,
     codes: { success: boolean, status: number, data: { repositories: { id: number, state: number }[] } }) => {
 
