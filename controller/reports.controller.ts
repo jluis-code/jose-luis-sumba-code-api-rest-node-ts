@@ -47,9 +47,8 @@ export const getCsv = async (req: Request, res: Response) => {
     } catch (error) {
         console.log(error);
         no_data_msg = `Information not available`;
+        returnCsv(res, ['no_data_msg'], [{ no_data_msg }])
     }
-
-    returnCsv(res, ['no_data_msg'], [{ no_data_msg }])
 
 }
 
