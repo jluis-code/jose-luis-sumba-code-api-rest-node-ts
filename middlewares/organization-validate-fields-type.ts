@@ -35,6 +35,36 @@ export const validateFieldsType = (req: Request, res: Response, next: () => void
         }
     }
 
+
+    if ('url' in body) {
+        if (!(typeof body.url === 'string') || body.url == '') {
+            return res.status(400).json({
+                "errors": [
+                    {
+                        "msg": "Url is not valid- require string",
+                        "param": "url",
+                        "location": "body"
+                    }
+                ]
+            });
+        }
+
+        try {
+            new URL(body.url);
+        } catch (error) {
+            console.log(`${Date().toString()}: ${body.url} is not a valid url`);
+            return res.status(400).json({
+                "errors": [
+                    {
+                        "msg": "Url is not valid - wrong format",
+                        "param": "url",
+                        "location": "body"
+                    }
+                ]
+            });
+        }
+    }
+
     next();
 
 }

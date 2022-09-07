@@ -19,11 +19,13 @@ export const getDeleteOrganizationResponseDTO = (org: { id_organization: string,
 
 export interface OrganizationDataRequest {
     name: string;
-    status: number | null
+    status: number | null,
+    url: string
 }
 
 export interface OrganizationData {
     id: number;
     name: string;
-    status: number
+    status: number,
+    url: string
 }

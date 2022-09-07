@@ -18,6 +18,11 @@ const Organization = db.define(
             type: DataTypes.INTEGER,
             defaultValue: 1,
             allowNull: false,
+        },
+        url: {
+            type: DataTypes.STRING(255),
+            allowNull: false,
+            defaultValue: '',
         }
     }
 );

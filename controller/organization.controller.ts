@@ -13,12 +13,12 @@ export const getOrganizationList = async (req: Request, res: Response) => {
         const data: OrganizationData = {
             id: elementAsJson.id_organization,
             name: elementAsJson.name,
-            status: elementAsJson.status
+            status: elementAsJson.status,
+            url: elementAsJson.url ? elementAsJson.url : ''
         };
         return data;
     }
     );
-
 
     return res.json({
         resultData
@@ -28,10 +28,13 @@ export const getOrganizationList = async (req: Request, res: Response) => {
 export const createOrganization = async (req: Request, res: Response) => {
 
     const { body } = req;
+    console.log(body);
     const data: OrganizationDataRequest = {
         name: body.name,
-        status: body.status ?? null
+        status: body.status ?? null,
+        url: body.url
     };
+    console.log({ data });
 
     try {
 
@@ -45,7 +48,7 @@ export const createOrganization = async (req: Request, res: Response) => {
             return res.json(new Error400(`Organization with name ${data.name} already exist`));
         }
 
-        const organization = await Organization.create({ name: data.name, status: data.status ?? 1 });
+        const organization = await Organization.create({ name: data.name, status: data.status ?? 1, url: data.url });
         const organizationAsJson = organization.get();
 
         if (organization) {
@@ -76,6 +79,7 @@ export const updateOrganization = async (req: Request, res: Response) => {
         const data: OrganizationDataRequest = {
             name: body.name ?? organizationAsJson.name,
             status: body.status ?? organizationAsJson.status,
+            url: body.url
         };
         await organization.update(data);
         return res.json(getUpdateOrganizationResponseDTO(organization.get()));
@@ -97,7 +101,8 @@ export const deleteOrganization = async (req: Request, res: Response) => {
         const organizationAsJson = organization.get();
         const data: OrganizationDataRequest = {
             name: organizationAsJson.name,
-            status: 0
+            status: 0,
+            url: organizationAsJson.url
         };
         await organization.update(data);
         return res.json(getDeleteOrganizationResponseDTO(organization.get()));

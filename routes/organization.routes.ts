@@ -11,6 +11,7 @@ router.get('/', getOrganizationList);
 
 router.post('/', [
     check('name', 'Name is required').not().isEmpty(),
+    check('url', 'Url is required').not().isEmpty(),
     validateFields,
     validateFieldsType,
 ], createOrganization);
