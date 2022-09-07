@@ -46,9 +46,12 @@ export const mapRepositoryMetricResponse = (repo: InstanceType<typeof Repository
 const getVerificationCode = (repositories: { id: number, state: number }[], id_repositoy: number) => {
 
 
-    const item = repositories.find(element => element.id == id_repositoy);
-    return item && item.state ? getVerificationCodeName(item.state) : '';
-
+    try {
+        const item = repositories.find(element => element.id == id_repositoy);
+        return item && item.state ? getVerificationCodeName(item.state) : '';
+    } catch (error) {
+        return '';
+    }
 }
 
 const getVerificationCodeName = (code: number) => {
